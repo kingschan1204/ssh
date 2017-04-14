@@ -52,7 +52,7 @@
           class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
         <!--dataSource属性指定要用到的连接池 -->
         <property name="dataSource" ref="defaultds"/>
-        <property name="packagesToScan" value="com.github.kingschan1204.ssh.model"/>
+        <property name="packagesToScan" value="com.github.kingschan1204.ssh.model.po"/>
         <property name="hibernateProperties">
             <value>
                 hibernate.dialect=org.hibernate.dialect.MySQLDialect
