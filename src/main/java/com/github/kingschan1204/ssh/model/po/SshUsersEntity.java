@@ -1,30 +1,34 @@
 package com.github.kingschan1204.ssh.model.po;
 
-import javax.persistence.*;
 import java.sql.Timestamp;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import javax.persistence.*;
+
 
 /**
  * Created by kingschan on 2017/4/14.
  */
 @Entity
-@Table(name = "ssh-users")
+@Table(name = "ssh_users")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class SshUsersEntity {
-    private int id;
+    private Integer id;
     private String username;
     private String password;
     private boolean sex;
-    private byte age;
+    private Integer age;
     private String email;
     private Timestamp birthday;
     private String remark;
 
     @Id
-    @Column(name = "id")
-    public int getId() {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -60,11 +64,11 @@ public class SshUsersEntity {
 
     @Basic
     @Column(name = "age")
-    public byte getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(byte age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 

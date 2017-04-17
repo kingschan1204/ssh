@@ -12,11 +12,11 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.metadata.ClassMetadata;/*
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.query.dsl.QueryBuilder;*/
 import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,9 +78,9 @@ public class HibernateOperactionTemplate {
      *
      * @return
      */
-    public FullTextSession getFullTextSession() {
+  /*  public FullTextSession getFullTextSession() {
         return Search.getFullTextSession(getSession());
-    }
+    }*/
 
     /**
      * hibernate search 全文检索分页查询
@@ -93,7 +93,7 @@ public class HibernateOperactionTemplate {
      * @param fields    字段名
      * @return
      */
-    public Pagination Paginations(String keyword, Class<?> clazz, int pageindex, int limit, boolean cacheable, String... fields) {
+   /* public Pagination Paginations(String keyword, Class<?> clazz, int pageindex, int limit, boolean cacheable, String... fields) {
         Pagination page = new Pagination();
         List<?> lis = null;
 
@@ -116,7 +116,7 @@ public class HibernateOperactionTemplate {
         page.setTotal(total);
         page.setMaxPage((total - 1) / limit + 1);
         return page;
-    }
+    }*/
 
     /**
      * 保存一个对象
