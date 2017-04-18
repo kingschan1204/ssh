@@ -22,10 +22,10 @@ public class IndexController {
     private UserService userServ;
 
     @RequestMapping("/")
-    public String index(Model mo,Integer page) {
+    public String index(Model mo,Integer page,String username,String email) {
         log.debug("test");
         try {
-          Page<UserVo> p= userServ.getUsers(null==page?0:page,10,"");
+          Page<UserVo> p= userServ.getUsers(null==page?0:page,10,"1","qq");
             System.out.println(JSONObject.fromObject(page));
             mo.addAttribute("page",p);
         }catch (Exception ex){
