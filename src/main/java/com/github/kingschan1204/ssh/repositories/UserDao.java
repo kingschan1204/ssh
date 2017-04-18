@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Created by kingschan on 2017/4/17.
+ * 用户dao
  */
 @Repository
 public interface UserDao extends PagingAndSortingRepository<SshUsersEntity, Integer>  {

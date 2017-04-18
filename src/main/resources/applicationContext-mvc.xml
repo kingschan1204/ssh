@@ -55,7 +55,7 @@
         </property>
         <property name="freemarkerVariables">
             <map>
-                <entry key="webroot" value="http://${app.host}"></entry>
+                <!--<entry key="webroot" value="http://${app.host}"></entry>-->
             </map>
         </property>
     </bean>

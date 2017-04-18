@@ -1,5 +1,13 @@
 # ssh
-springMvc+spring+hibernate ssh搭建
+本项目主要用来搭建一个标准的java开发框架整合框架如下：
+
+- freemarker
+- spring mvc
+- spring `4.3.1.RELEASE`
+- spring data jpa `1.10.0.RELEASE`
+- hiberante `5.1.0.Final`
+
+springMvc+spring+spring jpa+hibernate ssh搭建
 
 ## 表结构
 ```

@@ -16,6 +16,7 @@
             http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
             ">
 
+    <!--数据源配置-->
     <bean id="defaultds" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <property name="url" value="${jdbc.blog.url}"/>
         <property name="username" value="${jdbc.blog.username}"/>
@@ -108,7 +109,7 @@
     </bean>
 
     <!--配置基于注解的事务-->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+   <!-- <tx:annotation-driven transaction-manager="transactionManager"/>-->
 
     <!--配置spring data-->
     <jpa:repositories base-package="com.github.kingschan1204.ssh" entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager"></jpa:repositories>
@@ -167,7 +168,7 @@
     </bean>-->
 
 
-   <!-- <tx:advice id="txAdvice" transaction-manager="transactionManager">
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
             <tx:method name="has*" isolation="READ_COMMITTED" propagation="REQUIRED" read-only="true" timeout="100"/>
             <tx:method name="query*" isolation="READ_COMMITTED" propagation="REQUIRED" read-only="true" timeout="100"/>
@@ -186,11 +187,11 @@
     </tx:advice>
 
     <aop:config expose-proxy="true">
-        &lt;!&ndash; 只对业务逻辑层实施事务 &ndash;&gt;
+        <!-- 只对业务逻辑层实施事务 -->
         <aop:pointcut id="txPointcut" expression="execution(* com.github.kingschan1204.ssh.services..*.*(..))"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
     </aop:config>
-    &lt;!&ndash; <aop:aspectj-autoproxy expose-proxy="true"/> &ndash;&gt;
-    <aop:aspectj-autoproxy proxy-target-class="true"/>-->
+    <!-- <aop:aspectj-autoproxy expose-proxy="true"/> -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
 
 </beans>  
