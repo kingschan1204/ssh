@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Created by kingschan on 2017/4/14.
+ *
  */
 @Controller
 public class IndexController {
