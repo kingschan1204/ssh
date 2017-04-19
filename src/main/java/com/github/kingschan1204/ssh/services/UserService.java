@@ -19,6 +19,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kingschan on 2017/4/17.
@@ -38,18 +40,16 @@ public class UserService {
         Page<UserVo> data=userDao.findAll(new Specification<SshUsersEntity>() {
             @Override
             public Predicate toPredicate(Root<SshUsersEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                Predicate predicate = criteriaBuilder.conjunction();
+
+                List<Predicate> predicates = new ArrayList<>();
                 if (StringUtils.isNotBlank(username)){
-                    predicate.getExpressions().add(
-                            criteriaBuilder.like(root.<String>get("username"), "%" + StringUtils.trim(username) + "%")
-                    );
+                    predicates.add(criteriaBuilder.like(root.<String>get("username"), "%"+username+"%"));
                 }
                 if (StringUtils.isNotBlank(email)){
-                    predicate.getExpressions().add(
-                            criteriaBuilder.or(criteriaBuilder.like(root.<String>get("email"), "%" + StringUtils.trim(email) + "%"))
-                    );
+                    predicates.add(criteriaBuilder.like(root.<String>get("email"), "%"+email+"%"));
                 }
-                return predicate;
+                if (predicates.size()==0)return null;
+                return criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()]));
             }
         },pageable
         ).map(new Converter<SshUsersEntity, UserVo>() {

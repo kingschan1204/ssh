@@ -25,9 +25,10 @@ public class IndexController {
     public String index(Model mo,Integer page,String username,String email) {
         log.debug("test");
         try {
-          Page<UserVo> p= userServ.getUsers(null==page?0:page,10,"1","qq");
-            System.out.println(JSONObject.fromObject(page));
+          Page<UserVo> p= userServ.getUsers(null==page?0:page,10,username,email);
             mo.addAttribute("page",p);
+            mo.addAttribute("username",username);
+            mo.addAttribute("email",email);
         }catch (Exception ex){
             ex.printStackTrace();
         }
