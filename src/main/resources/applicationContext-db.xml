@@ -18,9 +18,9 @@
 
     <!--数据源配置-->
     <bean id="defaultds" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
-        <property name="url" value="${jdbc.blog.url}"/>
-        <property name="username" value="${jdbc.blog.username}"/>
-        <property name="password" value="${jdbc.blog.password}"/>
+        <property name="url" value="${jdbc.default.url}"/>
+        <property name="username" value="${jdbc.default.username}"/>
+        <property name="password" value="${jdbc.default.password}"/>
         <property name="initialSize" value="1"/>
         <property name="minIdle" value="1"/>
         <property name="maxActive" value="20"/>
@@ -34,7 +34,8 @@
         <property name="poolPreparedStatements" value="true"/>
         <property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>
         <property name="connectionProperties" value="config.decrypt=true;config.decrypt.key=${jdbc.blog.publickey}"/>
-        <property name="filters" value="config,stat,wall"/><!-- 监控统计用的filter:stat 日志用的filter:log4j 防御sql注入的filter:wall -->
+        <property name="filters"
+                  value="config,stat,wall"/><!-- 监控统计用的filter:stat 日志用的filter:log4j 防御sql注入的filter:wall -->
         <!--<property name= "statLogger" ref ="statLoggerb" /> -->
         <property name="proxyFilters">
             <list>
@@ -58,11 +59,11 @@
             <bean class="org.hibernate.ejb.HibernatePersistence"/>
         </property>
         <!-- 指定Jpa持久化实现厂商类,这里以Hibernate为例 -->
-        <property name="jpaVendorAdapter" >
+        <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
         </property>
         <!-- 指定Entity实体类包路径 -->
-        <property name="packagesToScan" >
+        <property name="packagesToScan">
             <array>
                 <value>com.github.kingschan1204.ssh.model.po</value>
             </array>
@@ -71,7 +72,7 @@
         <property name="jpaProperties">
             <props>
                 <!--命名策略-->
-               <!-- <prop key="hibernate.ejb.naming_strategy">hibernate.physical_naming_strategy</prop>-->
+                <!-- <prop key="hibernate.ejb.naming_strategy">hibernate.physical_naming_strategy</prop>-->
                 <!--基本配置-->
                 <prop key="hibernate.format_sql">true</prop>
                 <prop key="hibernate.show_sql">true</prop>
@@ -86,87 +87,20 @@
                 <prop key="hibernate.generate_statistics">true</prop>
                 <!--设置查询缓存@QueryHints-->
                 <prop key="hibernate.cache.use_query_cache">true</prop>
-
-                <!--<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-                <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
-                <prop key="hibernate.cache.provider_class">org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory</prop>
-                <prop key="hibernate.show_sql">true</prop>
-                <prop key="hibernate.format_sql">true</prop>
-                <prop key="hibernate.hbm2ddl.auto">validate</prop>-->
             </props>
         </property>
     </bean>
-
-    <!-- 重要配置：启用扫描并自动创建代理的功能  -->
-   <!-- <jpa:repositories base-package="com.github.kingschan1204.ssh.repositories"  transaction-manager-ref="transactionManager" entity-manager-factory-ref="entityManagerFactory"/>-->
-
-    <!-- Hibernate对Jpa的实现 -->
-    <!--<bean id="hibernateJpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>-->
 
     <!-- Jpa 事务管理器  -->
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-    <!--配置基于注解的事务-->
-   <!-- <tx:annotation-driven transaction-manager="transactionManager"/>-->
 
     <!--配置spring data-->
-    <jpa:repositories base-package="com.github.kingschan1204.ssh" entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager"></jpa:repositories>
-<!--end jpa-->
-
-
-    <!-- ①对数据源进行代理-->
-    <!-- <bean id="dataSourceProxy"
-        class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy" p:targetDataSource-ref="blog_ds"/>  -->
-
-   <!-- <bean id="sessionfactory"
-          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-        &lt;!&ndash;dataSource属性指定要用到的连接池 &ndash;&gt;
-        <property name="dataSource" ref="defaultds"/>
-        <property name="packagesToScan" value="com.github.kingschan1204.ssh.model.po"/>
-        <property name="hibernateProperties">
-            <value>
-                hibernate.dialect=org.hibernate.dialect.MySQLDialect
-                hibernate.show_sql=${jdbc.blog.showsql}
-                hibernate.temp.use_jdbc_metadata_defaults=false
-                &lt;!&ndash; 二级缓存 &ndash;&gt;
-                hibernate.cache.use_second_level_cache=${hibernate.query.cache}
-                hibernate.cache.use_query_cache=${hibernate.query.cache}
-                &lt;!&ndash; 二级缓存区域名的前缀 hibernate.cache.region_prefix=userCache &ndash;&gt;
-                hibernate.cache.region_prefix=
-                &lt;!&ndash; 高速缓存提供程序 &ndash;&gt;
-                hibernate.cache.region.factory_class=org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
-                &lt;!&ndash; 指定缓存配置文件位置 &ndash;&gt;
-                &lt;!&ndash; hibernate.cache.provider_configuration_file_resource_path=/ehcache.xml &ndash;&gt;
-                &lt;!&ndash; 强制Hibernate以更人性化的格式将数据存入二级缓存 &ndash;&gt;
-                hibernate.cache.use_structured_entries=true
-                &lt;!&ndash; Hibernate将收集有助于性能调节的统计数据 &ndash;&gt;
-                hibernate.generate_statistics=false
-                hibernate.jdbc.fetch_size=100
-                hibernate.jdbc.batch_size=100
-                &lt;!&ndash;  这是hibernate 4的方式hibernate.current_session_context_class=org.springframework.orm.hibernate5.SpringSessionContext &ndash;&gt;
-                hibernate.transaction.coordinator_class=jdbc
-                hibernate.connection.release_mode=after_transaction
-                hibernate.connection.autocommit=false
-                &lt;!&ndash; hibernate search &ndash;&gt;
-                hibernate.search.default.directory_provider=filesystem
-                hibernate.search.default.indexBase=${hibernate.search.default.indexBase}
-            </value>
-        </property>
-    </bean>
-
-
-    <bean id="txDefinition" class="org.springframework.transaction.support.DefaultTransactionDefinition">
-        <property name="propagationBehaviorName" value="PROPAGATION_REQUIRED"></property>
-    </bean>
-
-    &lt;!&ndash; 事务管理器 &ndash;&gt;
-    <bean id="transactionManager"
-          class="org.springframework.orm.hibernate5.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionfactory"></property>
-    </bean>-->
-
+    <jpa:repositories base-package="com.github.kingschan1204.ssh" entity-manager-factory-ref="entityManagerFactory"
+                      transaction-manager-ref="transactionManager"></jpa:repositories>
+    <!--end jpa-->
 
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
@@ -191,7 +125,6 @@
         <aop:pointcut id="txPointcut" expression="execution(* com.github.kingschan1204.ssh.services..*.*(..))"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
     </aop:config>
-    <!-- <aop:aspectj-autoproxy expose-proxy="true"/> -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
 </beans>  
