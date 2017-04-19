@@ -6,12 +6,13 @@
 - spring `4.3.1.RELEASE`
 - spring data jpa `1.10.0.RELEASE`
 - hiberante `5.1.0.Final`
+- logback
 
 springMvc+spring+spring jpa+hibernate ssh搭建
 
 ## 表结构
 ```
-CREATE TABLE `ssh-users` (
+CREATE TABLE `ssh_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(20) NOT NULL,
   `password` varchar(32) NOT NULL,
