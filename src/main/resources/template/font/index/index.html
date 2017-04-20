@@ -147,11 +147,16 @@
             dataType: "json",
             data: $("#form").serialize(),
             success: function (data) {
-                location.reload();
+                swal('提交成功', '', 'error');
+                setTimeout(reload(),2000);
             }
         });
     });
 
+    function reload() {
+        window.location.href='localhost';
+    }
+    
     // 新增按钮点击事件
     $("#saveButton").click(function() {
         // 重置表单数据
