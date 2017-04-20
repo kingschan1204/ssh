@@ -57,7 +57,7 @@
                 </tr>
             </#list>
         </table>
-        <p>找到${page.totalElements}条记录,共${page.totalPages}页，当前第${page.number}页</p>
+        <p>找到${page.totalElements}条记录,共${page.totalPages}页，当前第${page.number+1}页</p>
         <#if !url?exists>
             <#assign url="./?"/>
         </#if>
@@ -68,14 +68,14 @@
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <#list page.number-3 .. page.number as t>
-                    <#if (t>=1&&t<page.number)>
+                <#list page.number+1-3 .. page.number+1 as t>
+                    <#if (t>=1&&t<page.number+1)>
                         <li><a href="${url}page=${t}">${t}</a></li>
                     </#if>
                 </#list>
-                <li class="active"><a href="${url}page=${page.number}">${page.number}</a></li>
-                <#list page.number+1 ..page.number+3 as t>
-                    <#if (t<=page.totalPages-1)>
+                <li class="active"><a href="${url}page=${page.number+1}">${page.number+1}</a></li>
+                <#list page.number+1+1 ..page.number+1+3 as t>
+                    <#if (t<=page.totalPages)>
                     <li><a href="${url}page=${t}">${t}</a></li>
                     </#if>
                 </#list>
