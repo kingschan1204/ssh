@@ -33,7 +33,7 @@
         <property name="testOnReturn" value="false"/>
         <property name="poolPreparedStatements" value="true"/>
         <property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>
-        <property name="connectionProperties" value="config.decrypt=true;config.decrypt.key=${jdbc.blog.publickey}"/>
+        <property name="connectionProperties" value="config.decrypt=true;config.decrypt.key=${jdbc.default.publickey}"/>
         <property name="filters"
                   value="config,stat,wall"/><!-- 监控统计用的filter:stat 日志用的filter:log4j 防御sql注入的filter:wall -->
         <!--<property name= "statLogger" ref ="statLoggerb" /> -->
