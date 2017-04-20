@@ -23,8 +23,8 @@
                     <input type="text" class="form-control" name="email" value="${email}" placeholder="请输入关键字查询">
                 </div>
                 <button class="btn btn-info" type="submit">查询</button>
-                <button class="btn btn-primary" type="button">新增</button>
-                <button class="btn btn-warning" type="button">修改</button>
+                <button class="btn btn-primary" type="button" id="saveButton">新增</button>
+                <button class="btn btn-warning" type="button"  id="updateButton">修改</button>
                 <button class="btn btn-danger" type="button">删除</button>
             </form>
         </div>
@@ -68,7 +68,7 @@
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <#list page.number+1-3 .. page.number+1 as t>
+                <#list page.number-2 .. page.number+1 as t>
                     <#if (t>=1&&t<page.number+1)>
                         <li><a href="${url}page=${t}">${t}</a></li>
                     </#if>
@@ -89,5 +89,122 @@
     </div>
 </div>
 </div><!--contrainer-->
+
+<!-- saveOrUpdateModal新增/修改模态框 -->
+<div class="modal fade" id="saveOrUpdateModal" tabindex="-1"
+     role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close"></button>
+                <h4 class="modal-title">信息</h4>
+            </div>
+            <form action="/submit" method="post" id='form'>
+                <div class="modal-body">
+                    <!-- 隐藏的参数 -->
+                    <input id="id" name="id" class="form-control" type="hidden">
+
+                    <div class="form-group">
+                        <label for="username">用户名</label> <input type="text" class="form-control" id="username" name="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码</label> <input type="text" class="form-control" id="password" name="password">
+                    </div>
+                    <div class="form-group">
+                        <label>性别</label>
+                        <label class="radio-inline"> <input type="radio" value="true" id="male" name="sex" checked="checked">男</label>
+                        <label class="radio-inline"> <input type="radio" value="false" id="female" name="sex">女</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">年纪</label> <input type="text" class="form-control" id="age" name="age">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail</label> <input type="text" class="form-control" id="email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="birthday">生日</label> <input type="date" class="form-control" id="birthday" name="birthday">
+                    </div>
+                    <div class="form-group">
+                        <label for="remark">备注</label> <input type="text" class="form-control" id="remark" name="remark">
+                    </div>
+              </div>
+            <div class="modal-footer">
+                <button type="button" id="sure" class="btn btn-primary">提交</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- end modal div -->
+<script>
+    // 提交按钮事件
+    $("#sure").click(function() {
+        $.ajax({
+            type: "POST",
+            url: "submit",
+            dataType: "json",
+            data: $("#form").serialize(),
+            success: function (data) {
+                location.reload();
+            }
+        });
+    });
+
+    // 新增按钮点击事件
+    $("#saveButton").click(function() {
+        // 重置表单数据
+        formReset();
+        // 展示模态框
+        $("#saveOrUpdateModal").modal('show');
+    });
+
+    // 修改按钮点击事件
+    $("#updateButton").click(function() {
+        // 先判断当前选中的用户条数是否有且只有一条
+        if ($("input[type='checkbox']:checked").length != 1) {
+            swal('操作失败!', '选择一条需要修改的行', 'error');
+            return;
+        }
+        // 根据选中的id异步请求获得用户数据
+        var $id = $("input[type='checkbox']:checked").val();
+        $.ajax({
+            type : "POST",
+            url : "getUserById",
+            dataType : 'json',
+            data : {"id" : $id},
+            success : function(data) {
+                // 填充数据
+                $("#id").val(data.id);
+                $("#username").val(data.username);
+                $("#password").val(data.password);
+                $("input:radio[name=sex]")[0].checked = data.age;
+                $("input:radio[name=sex]")[1].checked = !data.age;
+                $("#age").val(data.age);
+                $("#email").val(data.email);
+                $("#birthday").val(data.birthday);
+                debugger;
+                $("#remark").val(data.remark);
+
+                // 展示模态框
+                $("#saveOrUpdateModal").modal('show');
+            }
+        });
+
+    });
+
+    // 重置表单的方法
+    function formReset() {
+        $("#id").val("");
+        $("#username").val("");
+        $("#password").val("");
+        $("input:radio[name=sex]")[0].checked = true;
+        $("#age").val("");
+        $("#email").val("");
+        $("#birthday").val("");
+        $("#remark").val("");
+    }
+</script>
 </body>
 </html>

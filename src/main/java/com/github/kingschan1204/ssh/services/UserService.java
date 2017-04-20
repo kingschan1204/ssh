@@ -18,6 +18,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,27 @@ public class UserService {
     // 新增用户
     public void saveUser(SshUsersEntity user) {
         userDao.save(user);
+    }
+
+    public UserVo getUser(Integer id) {
+        SshUsersEntity user = userDao.findOne(id);
+        UserVo vo = new UserVo();
+        vo.setAge(user.getAge());
+        vo.setRemark(user.getRemark());
+
+        // birthday需要转换一下
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//定义格式，不显示毫秒
+        String birthday = df.format(user.getBirthday());
+        //再转换为date字符串
+        birthday = birthday.substring(0,birthday.length() - 9);
+
+        vo.setBirthday(birthday);
+        vo.setEmail(user.getEmail());
+        vo.setId(user.getId());
+        vo.setPassword(user.getPassword());
+        vo.setUsername(user.getUsername());
+        vo.setSex(user.isSex());
+        return vo;
     }
 
     public Page<UserVo> getUsers(int pageindex, int pagesize, final String username, final String email)throws Exception{
