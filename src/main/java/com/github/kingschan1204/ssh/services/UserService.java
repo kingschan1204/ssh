@@ -36,7 +36,7 @@ public class UserService {
     }
 
     public Page<UserVo> getUsers(int pageindex, int pagesize, final String username, final String email)throws Exception{
-        Pageable pageable = new PageRequest(pageindex,pagesize);
+        Pageable pageable = new PageRequest(pageindex - 1,pagesize);
         Page<UserVo> data=userDao.findAll(new Specification<SshUsersEntity>() {
             @Override
             public Predicate toPredicate(Root<SshUsersEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
