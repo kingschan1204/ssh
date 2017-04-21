@@ -49,7 +49,7 @@
                     <td><input type="checkbox" value="${user.id}"> </td>
                     <td>${user.username}</td>
                     <td>${user.password}</td>
-                    <td>${user.sex}</td>
+                    <td><#if user.sex>男<#else>女</#if></td>
                     <td>${user.age}</td>
                     <td>${user.email}</td>
                     <td>${user.birthday}</td>
@@ -93,7 +93,7 @@
 <!-- saveOrUpdateModal新增/修改模态框 -->
 <div class="modal fade" id="saveOrUpdateModal" tabindex="-1"
      role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"
@@ -242,15 +242,104 @@
 
     // 重置表单的方法
     function formReset() {
-        $("#id").val("");
+        /*$("#id").val("");
         $("#username").val("");
         $("#password").val("");
         $("input:radio[name=sex]")[0].checked = true;
         $("#age").val("");
         $("#email").val("");
         $("#birthday").val("");
-        $("#remark").val("");
+        $("#remark").val("");*/
+
+        /*
+
+            注意!这样reset表单是不会重置隐藏字段的!!
+
+        */
+        $('#form')[0].reset();
+
+        //alert("隐藏字段id="+$("#id").val());
+        // 手动重置
+        $("#id").val("");
     }
+
+    /**
+     * 表单验证
+     */
+    $("#form").bootstrapValidator({
+        feedbackIcons : {
+            valid : 'glyphicon glyphicon-ok',
+            invalid : 'glyphicon glyphicon-remove',
+            validating : 'glyphicon glyphicon-refresh'
+        },
+        submitButtons : '#sure',
+        fields : {
+            // 多个重复
+            username : {
+                message: 'The username is not valid',
+                validators: {
+                    notEmpty: {/*非空提示*/
+                        message: '用户名不能为空'
+                    },
+                    stringLength: {/*长度提示*/
+                        min: 6,
+                        max: 30,
+                        message: '用户名长度必须在6到30之间'
+                    }
+                }
+            },
+            password : {
+                message:'密码无效',
+                validators: {
+                    notEmpty: {
+                        message: '密码不能为空'
+                    },
+                    regexp: {
+                        regexp: /^[a-zA-Z][a-zA-Z0-9]{1,15}$/,
+                        message: '必须以英文字母开头,且只能包含英文字母和数字'
+                    },
+                    stringLength: {
+                        min: 6,
+                        max: 15,
+                        message: '密码长度必须为6到15位之间'
+                    }
+                }
+            },
+            age : {
+                validators : {
+                    message:'年龄无效',
+                    notEmpty : {
+                        message : '年龄不能为空'
+                    },
+                    between : {
+                        min : 1,
+                        max : 120,
+                        message : '1-120之间'
+                    }
+                }
+            },
+            birthday : {
+                validators : {
+                    date : {
+                        min : '1897-4-13',
+                        message : '生日有误,请重新选择'
+                    }
+                }
+            },
+            email : {
+                validators : {
+                    notEmpty : {
+                        message : '邮箱不能为空'
+                    },
+                    emailAddress : {
+                        message : '邮箱地址有误'
+                    }
+                }
+            }
+        }
+    });
+
 </script>
+
 </body>
 </html>

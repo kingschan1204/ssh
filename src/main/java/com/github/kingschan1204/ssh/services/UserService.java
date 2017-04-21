@@ -32,6 +32,7 @@ public class UserService {
     @Resource
     private UserDao userDao;
 
+    // 根据id数组删除
     public void deleteByIds(Integer[] ids) {
         for(Integer id : ids) {
             userDao.delete(id);
