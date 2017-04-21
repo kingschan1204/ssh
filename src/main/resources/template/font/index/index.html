@@ -25,7 +25,7 @@
                 <button class="btn btn-info" type="submit">查询</button>
                 <button class="btn btn-primary" type="button" id="saveButton">新增</button>
                 <button class="btn btn-warning" type="button"  id="updateButton">修改</button>
-                <button class="btn btn-danger" type="button">删除</button>
+                <button class="btn btn-danger" type="button" id="deleteButton">删除</button>
             </form>
         </div>
 
@@ -146,15 +146,19 @@
             url: "submit",
             dataType: "json",
             data: $("#form").serialize(),
-            success: function (data) {
-                swal('提交成功', '', 'error');
-                setTimeout(reload(),2000);
+            success: function(data) {
+                swal('提交成功', '', 'success');
+                setTimeout("reload()",1000);
+            },
+            error: function (data) {
+                swal('提交失败', '请确认网络是否通畅', 'error');
             }
         });
     });
 
     function reload() {
-        window.location.href='localhost';
+        // 刷新网页
+        window.location.href='';
     }
     
     // 新增按钮点击事件
@@ -191,13 +195,50 @@
                 $("#birthday").val(data.birthday);
                 debugger;
                 $("#remark").val(data.remark);
-
                 // 展示模态框
                 $("#saveOrUpdateModal").modal('show');
             }
         });
-
     });
+
+    // 删除按钮点击事件
+    $("#deleteButton").click(function() {
+        // 判断是否有选中的用户信息
+        if ($("input[type='checkbox']:checked").length != 0) {
+            swal({
+                title : '确定要删除吗?',
+                text : "删除是不可逆操作!",
+                type : 'warning',
+                showCancelButton : true,
+                confirmButtonColor : '#3085d6',
+                cancelButtonColor : '#d33',
+                confirmButtonText : '确定',
+                cancelButtonText : '取消'
+            }).then(function() {
+                var ids= new Array();
+                $("input:checkbox:checked").each(function(i,k){
+                    var itemId=$(this).val();
+                    ids[i]=itemId;
+                });
+                ids = ids;
+                debugger;
+                // 删除的方法
+               $.ajax({
+                    type : "POST",
+                    url : "delete",
+                    dataType : 'json',
+                    data : {ids : ids},
+                    success : function(data) {
+                        swal('操作成功!', '以删除选中的行', 'success');
+                        setTimeout("reload()",1000);
+                    }
+                });
+
+            });
+        } else {
+            swal('操作失败!', '先选择需要删除的行', 'error');
+        }
+    })
 
     // 重置表单的方法
     function formReset() {

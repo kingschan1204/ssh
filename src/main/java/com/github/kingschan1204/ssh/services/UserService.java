@@ -4,6 +4,7 @@ import com.github.kingschan1204.ssh.model.po.SshUsersEntity;
 import com.github.kingschan1204.ssh.model.vo.UserVo;
 import com.github.kingschan1204.ssh.repositories.UserDao;
 import net.sf.json.JSONObject;
+import org.apache.commons.beanutils.converters.IntegerConverter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
@@ -30,6 +31,12 @@ import java.util.List;
 public class UserService {
     @Resource
     private UserDao userDao;
+
+    public void deleteByIds(Integer[] ids) {
+        for(Integer id : ids) {
+            userDao.delete(id);
+        }
+    }
 
     // 新增用户
     public void saveUser(SshUsersEntity user) {

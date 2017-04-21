@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,14 +47,15 @@ public class IndexController {
     }
 
     @RequestMapping("/submit")
-    public String submit(@RequestParam(value="id") Integer id,
-                         @RequestParam(value="username") String username,
-                         @RequestParam(value="password") String password,
-                         @RequestParam(value="sex") boolean sex,
-                         @RequestParam(value="age") Integer age,
-                         @RequestParam(value="email") String email,
-                         @RequestParam(value="birthday") String birthday,
-                         @RequestParam(value="remark") String remark) {
+    @ResponseBody
+    public Map submit(@RequestParam(value="id") Integer id,
+                                         @RequestParam(value="username") String username,
+                                         @RequestParam(value="password") String password,
+                                         @RequestParam(value="sex") boolean sex,
+                                         @RequestParam(value="age") Integer age,
+                                         @RequestParam(value="email") String email,
+                                         @RequestParam(value="birthday") String birthday,
+                                         @RequestParam(value="remark") String remark) {
 
         SshUsersEntity user = new SshUsersEntity();
         user.setId(id);
@@ -64,7 +67,7 @@ public class IndexController {
         user.setSex(sex);
         user.setRemark(remark);
         userServ.saveUser(user);
-        return "/font/index/index";
+        return new HashMap();
     }
 
     @ResponseBody
@@ -72,5 +75,12 @@ public class IndexController {
     public UserVo getUserById(@RequestParam(value = "id") Integer id) {
         UserVo vo = userServ.getUser(id);
         return vo;
+    }
+
+    @ResponseBody
+    @RequestMapping("/delete")
+    public Map delete(@RequestParam(value = "ids[]") Integer[]  ids) {
+        userServ.deleteByIds(ids);
+        return new HashMap();
     }
 }
