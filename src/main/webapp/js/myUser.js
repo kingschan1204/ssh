@@ -1,17 +1,47 @@
 
 
+function showLoading(msg) {
+    swal({
+        title: '',
+        text: msg,
+        width: '300px',
+        imageUrl: '/www/showloading/loading.gif',
+        showConfirmButton: false,
+        showLoaderOnConfirm: true,
+        allowOutsideClick: false
+    })
+}
+
+function closeLoading() {
+    /* if (null == blogAlert.dialog)return;
+     blogAlert.dialog.modal('hide');*/
+    swal.close();
+}
+
 // 提交按钮事件
 $("#sure").click(function() {
+    showLoading("正在提交");
     $.ajax({
         type: "POST",
         url: "submit",
         dataType: "json",
         data: $("#form").serialize(),
         success: function(data) {
-            swal('提交成功', '', 'success');
-            setTimeout("reload()",1000);
+            closeLoading();
+            $("#saveOrUpdateModal").modal('hide');
+            $.notify({
+                message: '提交成功'
+            },{
+                type: 'success',
+                placement: {
+                    from: "top",
+                    align: "center"
+                },
+            });
+            setTimeout("reload()",2000);
         },
         error: function (data) {
+            closeLoading();
             swal('提交失败', '请确认网络是否通畅', 'error');
         }
     });
@@ -39,6 +69,7 @@ $("#updateButton").click(function() {
     }
     // 根据选中的id异步请求获得用户数据
     var $id = $("input[type='checkbox']:checked").val();
+    showLoading();
     $.ajax({
         type : "POST",
         url : "getUserById",
@@ -55,6 +86,7 @@ $("#updateButton").click(function() {
             $("#email").val(data.email);
             $("#birthday").val(data.birthday);
             $("#remark").val(data.remark);
+            closeLoading();
             // 展示模态框
             $("#saveOrUpdateModal").modal('show');
         }
@@ -90,6 +122,9 @@ $("#deleteButton").click(function() {
                 success : function(data) {
                     swal('操作成功!', '以删除选中的行', 'success');
                     setTimeout("reload()",1000);
+                },
+                error : function(data) {
+                    swal('操作失败!', '请检测网络', 'error');
                 }
             });
 
