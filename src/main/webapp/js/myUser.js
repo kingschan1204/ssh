@@ -1,7 +1,4 @@
 
-// 确定绑定完成后再绑定事件
-onload = function(){
-
 
 // 提交按钮事件
 $("#sure").click(function() {
@@ -57,7 +54,6 @@ $("#updateButton").click(function() {
             $("#age").val(data.age);
             $("#email").val(data.email);
             $("#birthday").val(data.birthday);
-            debugger;
             $("#remark").val(data.remark);
             // 展示模态框
             $("#saveOrUpdateModal").modal('show');
@@ -85,7 +81,6 @@ $("#deleteButton").click(function() {
                 ids[i]=itemId;
             });
             ids = ids;
-            debugger;
             // 删除的方法
             $.ajax({
                 type : "POST",
@@ -202,4 +197,3 @@ $("#form").bootstrapValidator({
         }
     }
 });
-}
