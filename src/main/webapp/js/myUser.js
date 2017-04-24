@@ -1,5 +1,16 @@
 
 
+// 通过控制selected属性来操作checkbox
+/*$("table tr").click(function(){
+    // debugger;
+    if($(this).hasClass("selected")){
+        $(this).removeClass("selected").find(":checkbox").attr("checked",false);
+    }else{
+        $(this).addClass("selected").find(":checkbox").attr("checked",true);
+    }
+    alert($(this).find(":checkbox").attr("checked"));
+});*/
+
 function showLoading(msg) {
     swal({
         title: '',
