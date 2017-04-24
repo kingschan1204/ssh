@@ -80,5 +80,17 @@ public class UserVo {
 
     private String remark;
 
-
+    @Override
+    public String toString() {
+        return "UserVo{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", sex=" + sex +
+                ", age=" + age +
+                ", email='" + email + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", remark='" + remark + '\'' +
+                '}';
+    }
 }

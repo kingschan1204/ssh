@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -48,16 +49,9 @@ public class IndexController {
 
     @RequestMapping("/submit")
     @ResponseBody
-    public Map submit(@RequestParam(value="id") Integer id,
-                                         @RequestParam(value="username") String username,
-                                         @RequestParam(value="password") String password,
-                                         @RequestParam(value="sex") boolean sex,
-                                         @RequestParam(value="age") Integer age,
-                                         @RequestParam(value="email") String email,
-                                         @RequestParam(value="birthday") String birthday,
-                                         @RequestParam(value="remark") String remark) {
+    public Map submit(UserVo userVo) {
 
-        SshUsersEntity user = new SshUsersEntity();
+        /*SshUsersEntity user = new SshUsersEntity();
         user.setId(id);
         user.setAge(age);
         user.setBirthday(Timestamp.valueOf(birthday + " 00:00:00"));
@@ -65,8 +59,10 @@ public class IndexController {
         user.setUsername(username);
         user.setPassword(password);
         user.setSex(sex);
-        user.setRemark(remark);
-        userServ.saveUser(user);
+        user.setRemark(remark);*/
+        userVo=userVo;
+
+        userServ.saveUser(userVo);
         return new HashMap();
     }
 

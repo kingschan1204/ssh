@@ -3,8 +3,6 @@ package com.github.kingschan1204.ssh.services;
 import com.github.kingschan1204.ssh.model.po.SshUsersEntity;
 import com.github.kingschan1204.ssh.model.vo.UserVo;
 import com.github.kingschan1204.ssh.repositories.UserDao;
-import net.sf.json.JSONObject;
-import org.apache.commons.beanutils.converters.IntegerConverter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
@@ -34,14 +32,21 @@ public class UserService {
 
     // 根据id数组删除
     public void deleteByIds(Integer[] ids) {
+
         for(Integer id : ids) {
             userDao.delete(id);
         }
     }
 
     // 新增用户
-    public void saveUser(SshUsersEntity user) {
-        userDao.save(user);
+    public void saveUser(UserVo userVo) {
+        SshUsersEntity userPo = new SshUsersEntity();
+        // 把vo转成po
+        BeanUtils.copyProperties(userVo,userPo);
+        // 手动转化类型不同的birthday属性
+        userPo.setBirthday(Timestamp.valueOf(userVo.getBirthday() + " 00:00:00"));
+        userPo=userPo;
+        userDao.save(userPo);
     }
 
     public UserVo getUser(Integer id) {
@@ -93,4 +98,6 @@ public class UserService {
         });
         return data;
     }
+
+
 }
