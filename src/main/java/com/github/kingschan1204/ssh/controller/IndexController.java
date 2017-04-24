@@ -1,24 +1,26 @@
 package com.github.kingschan1204.ssh.controller;
 
-import com.github.kingschan1204.ssh.model.po.SshUsersEntity;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kingschan1204.ssh.model.vo.UserVo;
 import com.github.kingschan1204.ssh.services.UserService;
-import java.sql.Timestamp;
-import net.sf.json.JSONObject;
+
+import java.io.IOException;
+import java.io.PrintWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
@@ -35,7 +37,7 @@ public class IndexController {
 
     @RequestMapping("/")
     public String index(Model mo,Integer page,String username,String email) {
-        log.debug("test");
+        /*log.debug("test");
         try {
           Page<UserVo> p= userServ.getUsers(null==page?1:page,10,username,email);
             mo.addAttribute("page",p);
@@ -44,24 +46,13 @@ public class IndexController {
         }catch (Exception ex){
             ex.printStackTrace();
         }
-        return "/font/index/index";
+       return "/font/index/index";*/
+        return "/font/index/table";
     }
 
     @RequestMapping("/submit")
     @ResponseBody
     public Map submit(UserVo userVo) {
-
-        /*SshUsersEntity user = new SshUsersEntity();
-        user.setId(id);
-        user.setAge(age);
-        user.setBirthday(Timestamp.valueOf(birthday + " 00:00:00"));
-        user.setEmail(email);
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setSex(sex);
-        user.setRemark(remark);*/
-        userVo=userVo;
-
         userServ.saveUser(userVo);
         return new HashMap();
     }
@@ -78,5 +69,33 @@ public class IndexController {
     public Map delete(@RequestParam(value = "ids[]") Integer[]  ids) {
         userServ.deleteByIds(ids);
         return new HashMap();
+    }
+
+    @RequestMapping("/tableGet")
+    public Model tableGet(Model mo, HttpServletResponse response) {
+        /*log.debug("test");
+        try {
+            Page<UserVo> p= userServ.getUsers(null==page?1:page,10,username,email);
+            mo.addAttribute("page",p);
+            mo.addAttribute("username",username);
+            mo.addAttribute("email",email);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }*/
+        try {
+            Page<UserVo> users = userServ.getUsers(1, 10, null, null);
+            mo.addAttribute(users);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return mo;
+    }
+
+    @ResponseBody
+    @RequestMapping("/findAll")
+    public List<UserVo> findAll(String username,String email) {
+        List<UserVo> users = userServ.getAllUsers(username,email);
+        return users;
     }
 }

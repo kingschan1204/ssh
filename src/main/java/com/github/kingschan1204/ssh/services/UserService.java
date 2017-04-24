@@ -20,6 +20,7 @@ import javax.persistence.criteria.Root;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -100,4 +101,16 @@ public class UserService {
     }
 
 
+    public List<UserVo> getAllUsers(String username,String email) {
+        Iterator<SshUsersEntity> userPos = userDao.findAll().iterator();
+        List l = new ArrayList();
+        while(userPos.hasNext()){
+            SshUsersEntity userPo = userPos.next();
+            UserVo vo = new UserVo();
+            BeanUtils.copyProperties(userPo,vo);
+            vo.setBirthday(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(userPo.getBirthday()) );
+            l.add(vo);
+        }
+        return l;
+    }
 }
