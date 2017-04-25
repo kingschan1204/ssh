@@ -93,7 +93,7 @@
         </property>
         <property name="freemarkerVariables">
             <map>
-                <entry key="app.version" value="?v=20170424-1"></entry>
+                <entry key="app.version" value="?v=20170425-1"></entry>
             </map>
         </property>
     </bean>

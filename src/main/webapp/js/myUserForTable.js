@@ -49,7 +49,8 @@ $("#sure").click(function() {
                     align: "center"
                 },
             });
-            setTimeout("reload()",2000);
+            // setTimeout("reload()",2000);
+            reload();
         },
         error: function (data) {
             closeLoading();
@@ -60,7 +61,9 @@ $("#sure").click(function() {
 
 function reload() {
     // 刷新网页
-    window.location.href='';
+    //$('#table').bootstrapTable('load', "data");
+    // 通过触发刷新按钮来重新加载数据
+    $("button[name=refresh]").trigger('click');
 }
 
 // 新增按钮点击事件
@@ -123,8 +126,8 @@ $("#deleteButton").click(function() {
                     var itemId=$(this).parent().next().html();
                     ids[i]=itemId;
             });
-            ids=ids;
-            debugger;
+            //ids=ids;
+            //debugger;
             // 删除的方法
             $.ajax({
                 type : "POST",
@@ -132,8 +135,18 @@ $("#deleteButton").click(function() {
                 dataType : 'json',
                 data : {ids : ids},
                 success : function(data) {
-                    swal('操作成功!', '以删除选中的行', 'success');
-                    setTimeout("reload()",1000);
+                    //swal('操作成功!', '以删除选中的行', 'success');
+                    // setTimeout("reload()",1000);
+                    $.notify({
+                        message: '删除成功'
+                    },{
+                        type: 'success',
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        },
+                    });
+                    reload();
                 },
                 error : function(data) {
                     swal('操作失败!', '请检测网络', 'error');

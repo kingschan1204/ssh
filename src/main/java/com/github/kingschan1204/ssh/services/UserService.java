@@ -46,9 +46,10 @@ public class UserService {
         BeanUtils.copyProperties(userVo,userPo);
         // 手动转化类型不同的birthday属性
         userPo.setBirthday(Timestamp.valueOf(userVo.getBirthday() + " 00:00:00"));
-        userPo=userPo;
+        userPo.setSex(userVo.getSex().equals("男"));
         userDao.save(userPo);
     }
+
 
     public UserVo getUser(Integer id) {
         SshUsersEntity user = userDao.findOne(id);
@@ -67,7 +68,7 @@ public class UserService {
         vo.setId(user.getId());
         vo.setPassword(user.getPassword());
         vo.setUsername(user.getUsername());
-        vo.setSex(user.isSex());
+        vo.setSex(user.isSex()?"男":"女");
         return vo;
     }
 
@@ -93,7 +94,10 @@ public class UserService {
             public UserVo convert(SshUsersEntity sshUsersEntity) {
                 UserVo vo = new UserVo();
                 BeanUtils.copyProperties(sshUsersEntity,vo);
-                vo.setBirthday(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(sshUsersEntity.getBirthday()) );
+                String birthday = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(sshUsersEntity.getBirthday());
+                //再转换为date字符串
+                birthday = birthday.substring(0,birthday.length() - 9);
+                vo.setBirthday(birthday);
                 return vo;
             }
         });
@@ -108,7 +112,11 @@ public class UserService {
             SshUsersEntity userPo = userPos.next();
             UserVo vo = new UserVo();
             BeanUtils.copyProperties(userPo,vo);
-            vo.setBirthday(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(userPo.getBirthday()) );
+            String birthday = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(userPo.getBirthday());
+            //再转换为date字符串
+            birthday = birthday.substring(0,birthday.length() - 9);
+            vo.setBirthday(birthday);
+            vo.setSex(userPo.isSex()?"男":"女");
             l.add(vo);
         }
         return l;
