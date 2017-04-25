@@ -161,16 +161,7 @@ $("#deleteButton").click(function() {
 
 // 重置表单的方法
 function formReset() {
-    /*$("#id").val("");
-     $("#username").val("");
-     $("#password").val("");
-     $("input:radio[name=sex]")[0].checked = true;
-     $("#age").val("");
-     $("#email").val("");
-     $("#birthday").val("");
-     $("#remark").val("");*/
-
-    /*
+     /*
 
      注意!这样reset表单是不会重置隐藏字段的!!
 
@@ -185,6 +176,8 @@ function formReset() {
 /**
  * 表单验证
  */
+function initValidator(){
+
 $("#form").bootstrapValidator({
     feedbackIcons : {
         valid : 'glyphicon glyphicon-ok',
@@ -256,4 +249,10 @@ $("#form").bootstrapValidator({
             }
         }
     }
+});
+
+}
+//初始化表单验证
+$(document).ready(function() {
+    initValidator();
 });
