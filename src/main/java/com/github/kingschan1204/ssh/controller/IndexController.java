@@ -71,27 +71,6 @@ public class IndexController {
         return new HashMap();
     }
 
-    @RequestMapping("/tableGet")
-    public Model tableGet(Model mo, HttpServletResponse response) {
-        /*log.debug("test");
-        try {
-            Page<UserVo> p= userServ.getUsers(null==page?1:page,10,username,email);
-            mo.addAttribute("page",p);
-            mo.addAttribute("username",username);
-            mo.addAttribute("email",email);
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }*/
-        try {
-            Page<UserVo> users = userServ.getUsers(1, 10, null, null);
-            mo.addAttribute(users);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return mo;
-    }
-
     @ResponseBody
     @RequestMapping("/findAll")
     public List<UserVo> findAll(String username,String email) {
