@@ -124,15 +124,19 @@ public class UserService {
                 String birthday = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(sshUsersEntity.getBirthday());
                 // 再转换为date字符串
                 birthday = birthday.substring(0,birthday.length() - 9);
-                //
                 vo.setBirthday(birthday);
+                // 转换性别
+                vo.setSex(sshUsersEntity.isSex()?"男":"女");
                 return vo;
             }
         });
         return data;
     }
 
-
+    /**
+     * 不分页获取所有UserVo集合
+     * @return
+     */
     public List<UserVo> getAllUsers() {
         Iterator<SshUsersEntity> userPos = userDao.findAll().iterator();
         List l = new ArrayList();
@@ -141,7 +145,7 @@ public class UserService {
             UserVo vo = new UserVo();
             BeanUtils.copyProperties(userPo,vo);
             String birthday = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(userPo.getBirthday());
-            //再转换为date字符串
+            // 再转换为date字符串
             birthday = birthday.substring(0,birthday.length() - 9);
             vo.setBirthday(birthday);
             vo.setSex(userPo.isSex()?"男":"女");
@@ -150,9 +154,4 @@ public class UserService {
         return l;
     }
 
-    public UserByPageVo getUserByPage(String search, String sort, String order, Integer offset, Integer limit) {
-        //userDao.findAll(sort,order,offset,limit);
-
-        return null;
-    }
 }
