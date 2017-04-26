@@ -183,7 +183,9 @@ function formReset() {
 
     // 获取验证器
     var validator = $('#form').data("bootstrapValidator");
-    // 重置表单所有验证规则
+
+
+    /*-------------------重置表单所有验证规则--------------------*/
     // 先销毁验证器
     validator.destroy();
     // 再重新初始化
