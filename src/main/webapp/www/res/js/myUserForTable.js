@@ -31,6 +31,15 @@ function closeLoading() {
 
 // 提交按钮事件
 $("#sure").click(function() {
+    //获取表单对象
+    var bootstrapValidator = $("#form").data('bootstrapValidator');
+    //手动触发验证
+    bootstrapValidator.validate();
+    // 如果验证未通过,则不继续提交
+    if(!bootstrapValidator.isValid()){
+        return;
+    }
+
     showLoading("正在提交");
     $.ajax({
         type: "POST",
@@ -171,6 +180,14 @@ function formReset() {
     //alert("隐藏字段id="+$("#id").val());
     // 手动重置
     $("#id").val("");
+
+    // 获取验证器
+    var validator = $('#form').data("bootstrapValidator");
+    // 重置表单所有验证规则
+    // 先销毁验证器
+    validator.destroy();
+    // 再重新初始化
+    initValidator();
 }
 
 /**
@@ -178,80 +195,84 @@ function formReset() {
  */
 function initValidator(){
 
-$("#form").bootstrapValidator({
-    feedbackIcons : {
-        valid : 'glyphicon glyphicon-ok',
-        invalid : 'glyphicon glyphicon-remove',
-        validating : 'glyphicon glyphicon-refresh'
-    },
-    submitButtons : '#sure',
-    fields : {
-        // 多个重复
-        username : {
-            message: 'The username is not valid',
-            validators: {
-                notEmpty: {/*非空提示*/
-                    message: '用户名不能为空'
-                },
-                stringLength: {/*长度提示*/
-                    min: 6,
-                    max: 30,
-                    message: '用户名长度必须在6到30之间'
+    $("#form").bootstrapValidator({
+        feedbackIcons : {
+            valid : 'glyphicon glyphicon-ok',
+            invalid : 'glyphicon glyphicon-remove',
+            validating : 'glyphicon glyphicon-refresh'
+        },
+        submitButtons : '#sure',
+        fields : {
+            // 多个重复
+            username : {
+                message: 'The username is not valid',
+                validators: {
+                    notEmpty: {/*非空提示*/
+                        message: '用户名不能为空'
+                    },
+                    stringLength: {/*长度提示*/
+                        min: 6,
+                        max: 30,
+                        message: '用户名长度必须在6到30之间'
+                    }
+                }
+            },
+            password : {
+                message:'密码无效',
+                validators: {
+                    notEmpty: {
+                        message: '密码不能为空'
+                    },
+                    regexp: {
+                        regexp: /^[a-zA-Z][a-zA-Z0-9]{1,15}$/,
+                        message: '必须以英文字母开头,且只能包含英文字母和数字'
+                    },
+                    stringLength: {
+                        min: 6,
+                        max: 15,
+                        message: '密码长度必须为6到15位之间'
+                    }
+                }
+            },
+            age : {
+                validators : {
+                    message:'年龄无效',
+                    notEmpty : {
+                        message : '年龄不能为空'
+                    },
+                    between : {
+                        min : 1,
+                        max : 120,
+                        message : '1-120之间'
+                    }
+                }
+            },
+            birthday : {
+                validators : {
+                    notEmpty: {
+                        message: '生日必填'
+                    },
+                    date : {
+                        min : '1897-4-13',
+                        message : '生日有误,请重新选择'
+                    }
+                }
+            },
+            email : {
+                validators : {
+                    notEmpty : {
+                        message : '邮箱不能为空'
+                    },
+                    emailAddress : {
+                        message : '邮箱地址有误'
+                    }
                 }
             }
         },
-        password : {
-            message:'密码无效',
-            validators: {
-                notEmpty: {
-                    message: '密码不能为空'
-                },
-                regexp: {
-                    regexp: /^[a-zA-Z][a-zA-Z0-9]{1,15}$/,
-                    message: '必须以英文字母开头,且只能包含英文字母和数字'
-                },
-                stringLength: {
-                    min: 6,
-                    max: 15,
-                    message: '密码长度必须为6到15位之间'
-                }
-            }
-        },
-        age : {
-            validators : {
-                message:'年龄无效',
-                notEmpty : {
-                    message : '年龄不能为空'
-                },
-                between : {
-                    min : 1,
-                    max : 120,
-                    message : '1-120之间'
-                }
-            }
-        },
-        birthday : {
-            validators : {
-                date : {
-                    min : '1897-4-13',
-                    message : '生日有误,请重新选择'
-                }
-            }
-        },
-        email : {
-            validators : {
-                notEmpty : {
-                    message : '邮箱不能为空'
-                },
-                emailAddress : {
-                    message : '邮箱地址有误'
-                }
-            }
-        }
-    }
-});
+    });
 
 }
+
 //初始化表单验证
 $(document).ready(function() {
     initValidator();
