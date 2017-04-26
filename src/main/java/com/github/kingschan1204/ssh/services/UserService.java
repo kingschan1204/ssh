@@ -1,6 +1,8 @@
 package com.github.kingschan1204.ssh.services;
 
+import com.alibaba.druid.sql.PagerUtils;
 import com.github.kingschan1204.ssh.model.po.SshUsersEntity;
+import com.github.kingschan1204.ssh.model.vo.UserByPageVo;
 import com.github.kingschan1204.ssh.model.vo.UserVo;
 import com.github.kingschan1204.ssh.repositories.UserDao;
 import org.apache.commons.lang.StringUtils;
@@ -9,6 +11,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -72,13 +75,37 @@ public class UserService {
         return vo;
     }
 
-    public Page<UserVo> getUsers(int pageindex, int pagesize, final String username, final String email)throws Exception{
-        Pageable pageable = new PageRequest(pageindex - 1,pagesize);
+    /**
+     * 分页查找用户并支持分页
+     * @param pageindex 页码
+     * @param pagesize  显示条数
+     * @param username 用户名
+     * @param email Email
+     * @param orderField 排序字段
+     * @param sortStyle 排序方式
+     * @return
+     * @throws Exception
+     */
+    public Page<UserVo> getUsers(int pageindex, int pagesize, final String username, final String email,String orderField,String sortStyle)throws Exception{
+        Pageable pageable =null;
+        // 判断是否包含排序信息,生产对应的Pageable查询条件
+        if (null != sortStyle && null != orderField){
+            Sort sort=new Sort(
+                    sortStyle.equalsIgnoreCase("asc")?
+                            Sort.Direction.ASC:Sort.Direction.DESC
+                    ,orderField);
+            pageable = new PageRequest(pageindex - 1,pagesize,sort);
+        }else{
+            pageable = new PageRequest(pageindex - 1,pagesize);
+        }
+
+        // 获取包含分页信息和UserVo集合的Page<UserVo>对象
         Page<UserVo> data=userDao.findAll(new Specification<SshUsersEntity>() {
             @Override
             public Predicate toPredicate(Root<SshUsersEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 
                 List<Predicate> predicates = new ArrayList<>();
+                // 判断字段是否存在来决定添加的条件
                 if (StringUtils.isNotBlank(username)){
                     predicates.add(criteriaBuilder.like(root.<String>get("username"), "%"+username+"%"));
                 }
@@ -95,8 +122,9 @@ public class UserService {
                 UserVo vo = new UserVo();
                 BeanUtils.copyProperties(sshUsersEntity,vo);
                 String birthday = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(sshUsersEntity.getBirthday());
-                //再转换为date字符串
+                // 再转换为date字符串
                 birthday = birthday.substring(0,birthday.length() - 9);
+                //
                 vo.setBirthday(birthday);
                 return vo;
             }
@@ -105,7 +133,7 @@ public class UserService {
     }
 
 
-    public List<UserVo> getAllUsers(String username,String email) {
+    public List<UserVo> getAllUsers() {
         Iterator<SshUsersEntity> userPos = userDao.findAll().iterator();
         List l = new ArrayList();
         while(userPos.hasNext()){
@@ -120,5 +148,11 @@ public class UserService {
             l.add(vo);
         }
         return l;
+    }
+
+    public UserByPageVo getUserByPage(String search, String sort, String order, Integer offset, Integer limit) {
+        //userDao.findAll(sort,order,offset,limit);
+
+        return null;
     }
 }
