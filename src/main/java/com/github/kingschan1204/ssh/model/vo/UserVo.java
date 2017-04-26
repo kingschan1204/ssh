@@ -9,7 +9,7 @@ public class UserVo {
     private Integer id;
     private String username;
     private String password;
-    private boolean sex;
+    private String sex;
     private Integer age;
     private String email;
     private String birthday;
@@ -38,11 +38,13 @@ public class UserVo {
         this.password = password;
     }
 
-    public boolean isSex() {
-        return sex;
-    }
+    public  String getSex() { return sex;}
 
-    public void setSex(boolean sex) {
+    /*public boolean isSex() {
+        return sex;
+    }*/
+
+    public void setSex(String sex) {
         this.sex = sex;
     }
 
@@ -79,6 +81,5 @@ public class UserVo {
     }
 
     private String remark;
-
 
 }

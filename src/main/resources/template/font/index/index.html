@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="cn">
 <head>
     <meta charset="UTF-8">
@@ -13,7 +14,7 @@
 <div class="row" >
     <div class="row" style="padding-left: 20px;">
         <div class="col-md-10">
-            <form class="form-inline" action="/">
+            <form class="form-inline" action="/" method="post">
                 <div class="form-group">
                     <label >用户名：</label>
                     <input type="text" class="form-control" name="username" value="${username}" placeholder="请输入关键字查询">
@@ -23,13 +24,14 @@
                     <input type="text" class="form-control" name="email" value="${email}" placeholder="请输入关键字查询">
                 </div>
                 <button class="btn btn-info" type="submit">查询</button>
-                <button class="btn btn-primary" type="button">新增</button>
-                <button class="btn btn-warning" type="button">修改</button>
-                <button class="btn btn-danger" type="button">删除</button>
+                <button class="btn btn-primary" type="button" id="saveButton">新增</button>
+                <button class="btn btn-warning" type="button"  id="updateButton">修改</button>
+                <button class="btn btn-danger" type="button" id="deleteButton">删除</button>
             </form>
         </div>
 
     </div>
+    <!--<input type="button" id="test" value="click"/>-->
     <div class="col-md-12">
         <table class="table table-striped table-hover">
             <thead>
@@ -49,7 +51,7 @@
                     <td><input type="checkbox" value="${user.id}"> </td>
                     <td>${user.username}</td>
                     <td>${user.password}</td>
-                    <td>${user.sex}</td>
+                    <td><#if user.sex>男<#else>女</#if></td>
                     <td>${user.age}</td>
                     <td>${user.email}</td>
                     <td>${user.birthday}</td>
@@ -57,30 +59,30 @@
                 </tr>
             </#list>
         </table>
-        <p>找到${page.totalElements}条记录,共${page.totalPages}页，当前第${page.number}页</p>
+        <p>找到${page.totalElements}条记录,共${page.totalPages}页，当前第${page.number+1}页</p>
         <#if !url?exists>
             <#assign url="./?"/>
         </#if>
         <nav>
             <ul class="pagination">
                 <li >
-                    <a href="${url}page=1" aria-label="Previous">
+                    <a href="${url}page=1&username=${username}&email=${email}" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <#list page.number-3 .. page.number as t>
-                    <#if (t>=1&&t<page.number)>
-                        <li><a href="${url}page=${t}">${t}</a></li>
+                <#list page.number-2 .. page.number+1 as t>
+                    <#if (t>=1&&t<page.number+1)>
+                        <li><a href="${url}page=${t}&username=${username}&email=${email}">${t}</a></li>
                     </#if>
                 </#list>
-                <li class="active"><a href="${url}page=${page.number}">${page.number}</a></li>
-                <#list page.number+1 ..page.number+3 as t>
-                    <#if (t<=page.totalPages-1)>
-                    <li><a href="${url}page=${t}">${t}</a></li>
+                <li class="active"><a href="${url}page=${page.number+1}&username=${username}&email=${email}">${page.number+1}</a></li>
+                <#list page.number+1+1 ..page.number+1+3 as t>
+                    <#if (t<=page.totalPages)>
+                    <li><a href="${url}page=${t}&username=${username}&email=${email}">${t}</a></li>
                     </#if>
                 </#list>
                 <li>
-                    <a href="${url}page=${page.totalPages-1}" aria-label="Next">
+                    <a href="${url}page=${page.totalPages}&username=${username}&email=${email}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
@@ -89,5 +91,56 @@
     </div>
 </div>
 </div><!--contrainer-->
+
+<!-- saveOrUpdateModal新增/修改模态框 -->
+<div class="modal fade" id="saveOrUpdateModal" tabindex="-1"
+     role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">信息</h4>
+            </div>
+            <form action="/submit" method="post" id='form'>
+                <div class="modal-body">
+                    <!-- 隐藏的参数 -->
+                    <input id="id" name="id" class="form-control" type="hidden">
+
+                    <div class="form-group">
+                        <label for="username">用户名</label> <input type="text" class="form-control" id="username" name="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码</label> <input type="text" class="form-control" id="password" name="password">
+                    </div>
+                    <div class="form-group">
+                        <label>性别</label>
+                        <label class="radio-inline"> <input type="radio" value="true" id="male" name="sex" checked="checked">男</label>
+                        <label class="radio-inline"> <input type="radio" value="false" id="female" name="sex">女</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">年纪</label> <input type="text" class="form-control" id="age" name="age">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail</label> <input type="text" class="form-control" id="email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="birthday">生日</label> <input type="date" class="form-control" id="birthday" name="birthday">
+                    </div>
+                    <div class="form-group">
+                        <label for="remark">备注</label> <input type="text" class="form-control" id="remark" name="remark">
+                    </div>
+              </div>
+            <div class="modal-footer">
+                <button type="button" id="sure" class="btn btn-primary">提交</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- end modal div -->
+
+<script type="text/JavaScript" src="js/myUser.js${app.version}"></script>
+
 </body>
 </html>
