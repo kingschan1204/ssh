@@ -1,16 +1,23 @@
-
-
-// 通过控制selected属性来操作checkbox
-/*$("table tr").click(function(){
- // debugger;
- if($(this).hasClass("selected")){
- $(this).removeClass("selected").find(":checkbox").attr("checked",false);
- }else{
- $(this).addClass("selected").find(":checkbox").attr("checked",true);
- }
- alert($(this).find(":checkbox").attr("checked"));
- });*/
-
+/**
+ * 搜索条件框事件
+ */
+$("#toolbar input").keydown(function(){
+    // 当按下回车键时
+    if(event.keyCode == 13){
+        $('#table').bootstrapTable('refresh',
+            {url: "/server?username="+$("#usernameInput").val()+"&email="+$("#emailInput").val()});
+        // 销毁原来的url
+        $('#table').bootstrapTable('destroy');
+        // 重置url
+        $('#table').bootstrapTable({
+            url: "/server?username="+$("#usernameInput").val()+"&email="+$("#emailInput").val(),                     //请求后台的URL（*）
+        });
+    }
+});
+/**
+ * 显示载入中的图片
+ * @param msg 提示信息
+ */
 function showLoading(msg) {
     swal({
         title: '',
@@ -23,9 +30,10 @@ function showLoading(msg) {
     })
 }
 
+/**
+ * 关闭载入中图片
+ */
 function closeLoading() {
-    /* if (null == blogAlert.dialog)return;
-     blogAlert.dialog.modal('hide');*/
     swal.close();
 }
 
@@ -86,12 +94,12 @@ $("#saveButton").click(function() {
 // 修改按钮点击事件
 $("#updateButton").click(function() {
     // 先判断当前选中的用户条数是否有且只有一条
-    if ($("input[type='checkbox']:checked").length != 1) {
+    if ($("td input[type='checkbox']:checked").length != 1) {
         swal('操作失败!', '选择一条需要修改的行', 'error');
         return;
     }
     // 根据选中的id异步请求获得用户数据
-    var $id = $("input[type='checkbox']:checked").parent().next().html();
+    var $id = $("td input[type='checkbox']:checked").parent().next().html();
     showLoading();
     $.ajax({
         type : "POST",
@@ -170,14 +178,10 @@ $("#deleteButton").click(function() {
 
 // 重置表单的方法
 function formReset() {
-     /*
 
-     注意!这样reset表单是不会重置隐藏字段的!!
-
-     */
+     /*----------注意!这样reset表单是不会重置隐藏字段的!!----------*/
     $('#form')[0].reset();
 
-    //alert("隐藏字段id="+$("#id").val());
     // 手动重置
     $("#id").val("");
 

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.*;
@@ -87,18 +88,20 @@ public class IndexController {
      * 服务器分页
      * @param offset
      * @param limit
+     * @param username
+     * @param email
      * @param search
      * @param sort
      * @param order
      * @return
      */
     @ResponseBody
-    @RequestMapping("/server")
-    public UserByPageVo serverPage(Integer offset,Integer limit,String search,String sort,String order) {
+    @RequestMapping(value="/server")
+    public UserByPageVo serverPage(Integer offset,Integer limit,String username,String email,String search,String sort,String order) {
         Page<UserVo> p = null;
         UserByPageVo vo = new UserByPageVo();
         try{
-            p= userServ.getUsers(null==offset?1:offset/limit+1,10,search,search,sort.equals("true")?null:sort,order);
+            p= userServ.getUsers(null==offset?1:offset/limit+1,limit,username,email,sort.equals("true")?null:sort,order);
             vo.setRows(p.getContent());
             vo.setTotal(p.getTotalElements());
         }catch (Exception ex){
