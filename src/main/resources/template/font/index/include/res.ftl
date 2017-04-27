@@ -14,3 +14,6 @@
 <script src="https://cdn.bootcss.com/mouse0270-bootstrap-notify/3.1.7/bootstrap-notify.min.js"></script>
 <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.js"></script>
 <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script>
+<!-- 调整表格列宽需要的插件 -->
+<script src="/www/plugs/bootstrap-table/extend/resizable/colResizable-1.5.min.js"></script>
+<script src="/www/plugs/bootstrap-table/extend/resizable/bootstrap-table-resizable.js"></script>
