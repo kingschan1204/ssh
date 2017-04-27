@@ -154,4 +154,17 @@ public class UserService {
         return l;
     }
 
+    /**
+     * 根据id和username查询用户名是否可用
+     * @param id 查询的id
+     * @param username  查询是否重名的用户名
+     * @return
+     */
+    public boolean usernameIsExist(Integer id, String username) {
+        // 根据用户名获取user对象
+        SshUsersEntity user = userDao.findOneByUsername(username);
+        // 当不存在对应用户名的用户或者为查询者自身则通过验证
+        boolean flag = user == null || user.getId().equals(id);
+        return flag;
+    }
 }

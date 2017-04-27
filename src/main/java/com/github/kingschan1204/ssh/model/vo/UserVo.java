@@ -1,17 +1,36 @@
 package com.github.kingschan1204.ssh.model.vo;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 import java.sql.Timestamp;
 
 /**
  * Created by kingschan on 2017/4/18.
  */
 public class UserVo {
+
     private Integer id;
+    @NotEmpty
+    @Length(min = 3, max = 30)
     private String username;
+    @NotEmpty
+    @Pattern(regexp = "[a-zA-Z][a-zA-Z0-9]{1,15}")
+    @Length(min = 6, max = 15)
     private String password;
+    @NotEmpty
     private String sex;
+    @Min(1)
+    @Max(100)
     private Integer age;
+    @Email
     private String email;
+    @Past
     private String birthday;
 
     public Integer getId() {
@@ -39,10 +58,6 @@ public class UserVo {
     }
 
     public  String getSex() { return sex;}
-
-    /*public boolean isSex() {
-        return sex;
-    }*/
 
     public void setSex(String sex) {
         this.sex = sex;

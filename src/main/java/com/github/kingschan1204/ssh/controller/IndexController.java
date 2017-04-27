@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.validation.Valid;
 import java.util.*;
 
 /**
@@ -42,7 +44,7 @@ public class IndexController {
      */
     @RequestMapping("/submit")
     @ResponseBody
-    public Map submit(UserVo userVo) {
+    public Map submit(@Valid UserVo userVo) {
         userServ.saveUser(userVo);
         return new HashMap();
     }
@@ -110,4 +112,12 @@ public class IndexController {
         return vo;
     }
 
+    @ResponseBody
+    @RequestMapping("/isExist")
+    public Map isExist(Integer id, String username) {
+        boolean flag = userServ.usernameIsExist(id,username);
+        Map vo = new HashMap();
+        vo.put("valid",flag);
+        return vo;
+    }
 }

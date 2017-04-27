@@ -1,17 +1,12 @@
+
 /**
  * 搜索条件框事件
  */
 $("#toolbar input").keydown(function(){
     // 当按下回车键时
     if(event.keyCode == 13){
-        $('#table').bootstrapTable('refresh',
-            {url: "/server?username="+$("#usernameInput").val()+"&email="+$("#emailInput").val()});
-        // 销毁原来的url
-        $('#table').bootstrapTable('destroy');
-        // 重置url
-        $('#table').bootstrapTable({
-            url: "/server?username="+$("#usernameInput").val()+"&email="+$("#emailInput").val(),                     //请求后台的URL（*）
-        });
+        // 重新加载
+        reload();
     }
 });
 /**
@@ -40,17 +35,17 @@ function closeLoading() {
 // 提交按钮事件
 $("#sure").click(function() {
     //获取表单对象
-    var bootstrapValidator = $("#form").data('bootstrapValidator');
+    var $bootstrapValidator = $("#form").data('bootstrapValidator');
     //手动触发验证
-    bootstrapValidator.validate();
+    $bootstrapValidator.validate();
     // 如果验证未通过,则不继续提交
-    if(!bootstrapValidator.isValid()){
+    if(!$bootstrapValidator.isValid()){
         return;
     }
 
     showLoading("正在提交");
     $.ajax({
-        type: "POST",
+        type: "GET",
         url: "submit",
         dataType: "json",
         data: $("#form").serialize(),
@@ -71,7 +66,12 @@ $("#sure").click(function() {
         },
         error: function (data) {
             closeLoading();
-            swal('提交失败', '请确认网络是否通畅', 'error');
+            // 再次触发验证
+            $bootstrapValidator.validate();
+            // 如果验证通过,则提示提交失败
+            if($bootstrapValidator.isValid()){
+                swal('提交失败', '请确认网络是否通畅', 'error');
+            }
         }
     });
 });
@@ -79,8 +79,8 @@ $("#sure").click(function() {
 function reload() {
     // 刷新网页
     //$('#table').bootstrapTable('load', "data");
-    // 通过触发刷新按钮来重新加载数据
-    $("button[name=refresh]").trigger('click');
+    // 表格自带的刷新方法
+    $('#table').bootstrapTable('refresh',{url: "/server"});
 }
 
 // 新增按钮点击事件
@@ -107,6 +107,8 @@ $("#updateButton").click(function() {
         dataType : 'json',
         data : {"id" : $id},
         success : function(data) {
+            // 重置验证器
+            resetValidator();
             // 填充数据
             $("#id").val(data.id);
             $("#username").val(data.username);
@@ -185,16 +187,20 @@ function formReset() {
     // 手动重置
     $("#id").val("");
 
+    // 重置验证器
+    resetValidator();
+}
+
+function resetValidator() {
+    /*-------------------重置表单所有验证规则--------------------*/
     // 获取验证器
     var validator = $('#form').data("bootstrapValidator");
-
-
-    /*-------------------重置表单所有验证规则--------------------*/
     // 先销毁验证器
     validator.destroy();
     // 再重新初始化
     initValidator();
 }
+
 
 /**
  * 表单验证
@@ -210,17 +216,31 @@ function initValidator(){
         submitButtons : '#sure',
         fields : {
             // 多个重复
-            username : {
+            /*username : {
                 message: 'The username is not valid',
                 validators: {
-                    notEmpty: {/*非空提示*/
+                    notEmpty: {/!*非空提示*!/
                         message: '用户名不能为空'
                     },
-                    stringLength: {/*长度提示*/
-                        min: 6,
-                        max: 30,
-                        message: '用户名长度必须在6到30之间'
-                    }
+                    stringLength: {/!*长度提示*!/
+                        min: 3,
+                        max: 20,
+                        message: '用户名长度必须在3到20之间'
+                    },
+                    // 实时验证用户名是否存在
+                    remote: {//ajax验证。server result:{"valid",true or false} 向服务发送当前input name值，获得一个json数据。例表示正确：{"valid",true}
+                        url: '/isExist',//验证地址
+                        message: '用户名已存在',//提示消息
+                        delay : 2000,//每输入一个字符，就发ajax请求，服务器压力还是太大，设置2秒发送一次ajax（默认输入一个字符，提交一次，服务器压力太大）
+                        type: 'POST',//请求方式
+                        //自定义提交数据，默认值提交当前input value
+                        data: function(validator) {
+                            return {
+                                id: $('#id').val(),
+                                username: $('#username').val()
+                            };
+                        }
+                    },
                 }
             },
             password : {
@@ -253,6 +273,14 @@ function initValidator(){
                     }
                 }
             },
+            sex : {
+                validators : {
+                    message:'',
+                    notEmpty : {
+                        message : ''
+                    },
+                }
+            },
             birthday : {
                 validators : {
                     notEmpty: {
@@ -273,13 +301,36 @@ function initValidator(){
                         message : '邮箱地址有误'
                     }
                 }
-            }
-        },
+            }*/
+        }
     });
 
 }
 
-//初始化表单验证
+/**
+ * table的额外设置
+ */
+$('#table').bootstrapTable({
+    url: "/server",                     //请求后台的URL（*）
+    queryParams: function (params) { //重写提交的数据
+        return {
+            // 这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+            limit: params.limit, // 页面大小
+            offset: params.offset, // 页码数 * 页面大小
+            order: params.order, // 排序方式
+            sort: params.sort, //排序的字段
+            username: $("#usernameSearchInput").val(),
+            email: $("#emailInput").val()
+        };
+    },
+
+    resizable: true,  //启动表格可拖动调整列宽效果,需要bootstrap-table-resizable插件已经其依赖的colResizable-1.5插件
+    liveDrag: true,   // 表格拖动时的随动效果
+    headerOnly: true  // 设定拖动表头操作,能优化点击选行的体验
+});
+
+
+//初始化
 $(document).ready(function() {
     initValidator();
 });
