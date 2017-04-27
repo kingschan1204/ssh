@@ -45,7 +45,7 @@ $("#sure").click(function() {
 
     showLoading("正在提交");
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: "submit",
         dataType: "json",
         data: $("#form").serialize(),
@@ -113,8 +113,6 @@ $("#updateButton").click(function() {
             $("#id").val(data.id);
             $("#username").val(data.username);
             $("#password").val(data.password);
-            $("input:radio[name=sex]")[0].checked = data.age;
-            $("input:radio[name=sex]")[1].checked = !data.age;
             $("#age").val(data.age);
             $("#email").val(data.email);
             $("#birthday").val(data.birthday);
@@ -216,13 +214,13 @@ function initValidator(){
         submitButtons : '#sure',
         fields : {
             // 多个重复
-            /*username : {
+            username : {
                 message: 'The username is not valid',
                 validators: {
-                    notEmpty: {/!*非空提示*!/
+                    notEmpty: {/*非空提示*/
                         message: '用户名不能为空'
                     },
-                    stringLength: {/!*长度提示*!/
+                    stringLength: {/*长度提示*/
                         min: 3,
                         max: 20,
                         message: '用户名长度必须在3到20之间'
@@ -301,7 +299,7 @@ function initValidator(){
                         message : '邮箱地址有误'
                     }
                 }
-            }*/
+            }
         }
     });
 
