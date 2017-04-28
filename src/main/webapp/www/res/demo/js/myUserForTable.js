@@ -39,7 +39,7 @@ $("#sure").click(function() {
     //手动触发验证
     $bootstrapValidator.validate();
     // 如果验证未通过,则不继续提交
-    if(!$bootstrapValidator.isValid()){
+    if (!$bootstrapValidator.isValid()) {
         return;
     }
 
@@ -47,9 +47,9 @@ $("#sure").click(function() {
     $.ajax({
         type: "POST",
         url: "submit",
-        dataType: "json",
         data: $("#form").serialize(),
         success: function(data) {
+
             closeLoading();
             $("#saveOrUpdateModal").modal('hide');
             $.notify({
@@ -59,19 +59,12 @@ $("#sure").click(function() {
                 placement: {
                     from: "top",
                     align: "center"
-                },
+                }
             });
-            // setTimeout("reload()",2000);
             reload();
         },
         error: function (data) {
-            closeLoading();
-            // 再次触发验证
-            $bootstrapValidator.validate();
-            // 如果验证通过,则提示提交失败
-            if($bootstrapValidator.isValid()){
                 swal('提交失败', '请确认网络是否通畅', 'error');
-            }
         }
     });
 });
@@ -98,9 +91,11 @@ $("#updateButton").click(function() {
         swal('操作失败!', '选择一条需要修改的行', 'error');
         return;
     }
+
     // 根据选中的id异步请求获得用户数据
     var $id = $("td input[type='checkbox']:checked").parent().next().html();
     showLoading();
+
     $.ajax({
         type : "POST",
         url : "getUserById",
@@ -149,7 +144,6 @@ $("#deleteButton").click(function() {
             $.ajax({
                 type : "POST",
                 url : "delete",
-                dataType : 'json',
                 data : {ids : ids},
                 success : function(data) {
                     //swal('操作成功!', '以删除选中的行', 'success');
@@ -174,7 +168,7 @@ $("#deleteButton").click(function() {
     } else {
         swal('操作失败!', '先选择需要删除的行', 'error');
     }
-})
+});
 
 // 重置表单的方法
 function formReset() {
@@ -215,6 +209,7 @@ function initValidator(){
         fields : {
             // 多个重复
             username : {
+                trigger : "blur",   // 设置失去焦点时才验证
                 message: 'The username is not valid',
                 validators: {
                     notEmpty: {/*非空提示*/
@@ -226,10 +221,10 @@ function initValidator(){
                         message: '用户名长度必须在3到20之间'
                     },
                     // 实时验证用户名是否存在
-                    remote: {//ajax验证。server result:{"valid",true or false} 向服务发送当前input name值，获得一个json数据。例表示正确：{"valid",true}
+                    /*remote: {//ajax验证。server result:{"valid",true or false} 向服务发送当前input name值，获得一个json数据。例表示正确：{"valid",true}
                         url: '/isExist',//验证地址
                         message: '用户名已存在',//提示消息
-                        delay : 2000,//每输入一个字符，就发ajax请求，服务器压力还是太大，设置2秒发送一次ajax（默认输入一个字符，提交一次，服务器压力太大）
+                        // delay : 100,//每输入一个字符，就发ajax请求，服务器压力还是太大，设置一秒发送一次ajax（默认输入一个字符，提交一次，服务器压力太大）
                         type: 'POST',//请求方式
                         //自定义提交数据，默认值提交当前input value
                         data: function(validator) {
@@ -238,7 +233,7 @@ function initValidator(){
                                 username: $('#username').val()
                             };
                         }
-                    },
+                    }*/
                 }
             },
             password : {

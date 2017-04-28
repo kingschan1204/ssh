@@ -45,9 +45,9 @@ public class IndexController {
      */
     @RequestMapping("/submit")
     @ResponseBody
-    public Map submit(@Validated UserVo userVo) {
+    public String submit(@Validated UserVo userVo) {
         userServ.saveUser(userVo);
-        return new HashMap();
+        return "success";
     }
 
     /**
@@ -69,9 +69,9 @@ public class IndexController {
      */
     @ResponseBody
     @RequestMapping("/delete")
-    public Map delete(@RequestParam(value = "ids[]") Integer[]  ids) {
+    public String delete(@RequestParam(value = "ids[]") Integer[]  ids) {
         userServ.deleteByIds(ids);
-        return new HashMap();
+        return "success";
     }
 
     /**
