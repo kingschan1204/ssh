@@ -31,4 +31,10 @@ public interface UserDao extends PagingAndSortingRepository<SshUsersEntity, Inte
      */
     Page<SshUsersEntity> findAll(Specification<SshUsersEntity> spec, Pageable pageable);
 
+    /**
+     *
+     * @param username
+     * @return
+     */
+    SshUsersEntity findOneByUsername(String username);
 }
