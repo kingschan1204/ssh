@@ -40,10 +40,12 @@
                     <div class="form-group" style="margin-bottom: -10px">
                         <label for="usernameSearchInput">用户名：</label>
                         <input type="text" class="form-control" id="usernameSearchInput" name="username" placeholder="请输入关键字查询">
+                        <input type="hidden" class="form-control" id="currentSearchUsername">
                     </div>
                     <div class="form-group"  style="margin-bottom: -10px">
                         <label for="emailInput">邮箱：</label>
                         <input type="text" class="form-control" id="emailInput" name="email" placeholder="请输入关键字查询">
+                        <input type="hidden" class="form-control" id="currentSearchEmail">
                     </div>
                     <button class="btn btn-primary" type="button" id="saveButton">新增</button>
                     <button class="btn btn-warning" type="button"  id="updateButton">修改</button>
@@ -77,7 +79,7 @@
 </div><!--contrainer-->
 
 <!-- saveOrUpdateModal新增/修改模态框 -->
-<div class="modal fade" id="saveOrUpdateModal" tabindex="-1"
+<div class="modal fade" id="saveOrUpdateModal"
      role="dialog">
     <div class="modal-dialog" role="document" style="width: 400px;">
         <div class="modal-content">

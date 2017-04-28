@@ -13,24 +13,24 @@ import java.sql.Timestamp;
 public class UserVo {
 
     private Integer id;
-    @NotEmpty
-    @Length(min = 3, max = 30)
+    @NotEmpty(message = "用户编号不能为空")
+    @Length(min = 3, max = 30,message = "用户名长度应在3到30位")
     private String username;
-    @NotEmpty
-    @Pattern(regexp = "[a-zA-Z][a-zA-Z0-9]{1,15}")
-    @Length(min = 6, max = 15)
+    @NotEmpty(message = "密码不能为空")
+    @Pattern(regexp = "[a-zA-Z][a-zA-Z0-9]{1,15}",message = "密码只能包括数字和英文字母")
+    @Length(min = 6, max = 15,message = "密码长度应在6到15位")
     private String password;
-    @NotEmpty
-    @Pattern(regexp = "['男'|'女']")
+    @NotEmpty(message = "未选择性别")
+    @Pattern(regexp = "['男'|'女']",message = "提交信息有误,性别只能为\"男\"或\"女\"")
     private String sex;
-    @NotNull
-    @Min(1)
-    @Max(100)
+    @NotNull(message = "年纪不能为空")
+    @Min(value = 1,message = "年纪应在1-120内")
+    @Max(value = 120,message = "年纪应在1-120内")
     private Integer age;
-    @Email
+    @Email(message = "邮箱格式验证不通过")
     private String email;
     // 正则来验证yyyy-MM-dd格式的日期字符串
-    @Pattern(regexp = "((((1[6-9]|[2-9]\\d)\\d{2})-(0?[13578]|1[02])-(0?[1-9]|[12]\\d|3[01]))|(((1[6-9]|[2-9]\\d)\\d{2})-(0?[13456789]|1[012])-(0?[1-9]|[12]\\d|30))|(((1[6-9]|[2-9]\\d)\\d{2})-0?2-(0?[1-9]|1\\d|2[0-8]))|(((1[6-9]|[2-9]\\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))-0?2-29-))")
+    @Pattern(message = "生日验证不通过",regexp = "((((1[6-9]|[2-9]\\d)\\d{2})-(0?[13578]|1[02])-(0?[1-9]|[12]\\d|3[01]))|(((1[6-9]|[2-9]\\d)\\d{2})-(0?[13456789]|1[012])-(0?[1-9]|[12]\\d|30))|(((1[6-9]|[2-9]\\d)\\d{2})-0?2-(0?[1-9]|1\\d|2[0-8]))|(((1[6-9]|[2-9]\\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))-0?2-29-))")
     private String birthday;
 
     public Integer getId() {

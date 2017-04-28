@@ -5,6 +5,9 @@
 $("#toolbar input").keydown(function(){
     // 当按下回车键时
     if(event.keyCode == 13){
+
+        // 记录当前查询信息
+        setSearchInfo();
         // 重新加载
         reload();
     }
@@ -26,6 +29,14 @@ function showLoading(msg) {
 }
 
 /**
+ * 把当前搜索框的信息设为搜索条件的方法
+ */
+function setSearchInfo() {
+    $("#currentSearchUsername").val($("#usernameSearchInput").val());
+    $("#currentSearchEmail").val($("#emailSearchInput").val());
+}
+
+/**
  * 关闭载入中图片
  */
 function closeLoading() {
@@ -34,14 +45,14 @@ function closeLoading() {
 
 // 提交按钮事件
 $("#sure").click(function() {
-    //获取表单对象
+    /*//获取表单对象
     var $bootstrapValidator = $("#form").data('bootstrapValidator');
     //手动触发验证
     $bootstrapValidator.validate();
     // 如果验证未通过,则不继续提交
     if (!$bootstrapValidator.isValid()) {
         return;
-    }
+    }*/
 
     showLoading("正在提交");
     $.ajax({
@@ -49,7 +60,6 @@ $("#sure").click(function() {
         url: "submit",
         data: $("#form").serialize(),
         success: function(data) {
-
             closeLoading();
             $("#saveOrUpdateModal").modal('hide');
             $.notify({
@@ -63,8 +73,19 @@ $("#sure").click(function() {
             });
             reload();
         },
-        error: function (data) {
-                swal('提交失败', '请确认网络是否通畅', 'error');
+        error: function (data) { // 当提交失败时触发验证,如果验证通过则判断为其他问题
+
+            closeLoading();
+
+            //获取表单对象
+            var $bootstrapValidator = $("#form").data('bootstrapValidator');
+            //手动触发验证
+            $bootstrapValidator.validate();
+            // 如果验证未通过,则不继续提交
+            if (!$bootstrapValidator.isValid()) {
+                return false;
+            }
+            swal('提交失败', '请确认网络是否通畅', 'error');
         }
     });
 });
@@ -89,7 +110,7 @@ $("#updateButton").click(function() {
     // 先判断当前选中的用户条数是否有且只有一条
     if ($("td input[type='checkbox']:checked").length != 1) {
         swal('操作失败!', '选择一条需要修改的行', 'error');
-        return;
+        return false;
     }
 
     // 根据选中的id异步请求获得用户数据
@@ -139,7 +160,6 @@ $("#deleteButton").click(function() {
                     ids[i]=itemId;
             });
             //ids=ids;
-            //debugger;
             // 删除的方法
             $.ajax({
                 type : "POST",
@@ -206,25 +226,25 @@ function initValidator(){
             validating : 'glyphicon glyphicon-refresh'
         },
         submitButtons : '#sure',
-        fields : {
+        /*fields : {
             // 多个重复
             username : {
                 trigger : "blur",   // 设置失去焦点时才验证
                 message: 'The username is not valid',
                 validators: {
-                    notEmpty: {/*非空提示*/
+                    notEmpty: {/!*非空提示*!/
                         message: '用户名不能为空'
                     },
-                    stringLength: {/*长度提示*/
+                    stringLength: {/!*长度提示*!/
                         min: 3,
                         max: 20,
                         message: '用户名长度必须在3到20之间'
                     },
                     // 实时验证用户名是否存在
-                    /*remote: {//ajax验证。server result:{"valid",true or false} 向服务发送当前input name值，获得一个json数据。例表示正确：{"valid",true}
+                    remote: {//ajax验证。server result:{"valid",true or false} 向服务发送当前input name值，获得一个json数据。例表示正确：{"valid",true}
                         url: '/isExist',//验证地址
                         message: '用户名已存在',//提示消息
-                        // delay : 100,//每输入一个字符，就发ajax请求，服务器压力还是太大，设置一秒发送一次ajax（默认输入一个字符，提交一次，服务器压力太大）
+                        // delay : 1000,//每输入一个字符，就发ajax请求，服务器压力还是太大，设置一秒发送一次ajax（默认输入一个字符，提交一次，服务器压力太大）
                         type: 'POST',//请求方式
                         //自定义提交数据，默认值提交当前input value
                         data: function(validator) {
@@ -233,7 +253,7 @@ function initValidator(){
                                 username: $('#username').val()
                             };
                         }
-                    }*/
+                    }
                 }
             },
             password : {
@@ -295,7 +315,7 @@ function initValidator(){
                     }
                 }
             }
-        }
+        }*/
     });
 
 }
@@ -312,8 +332,8 @@ $('#table').bootstrapTable({
             offset: params.offset, // 页码数 * 页面大小
             order: params.order, // 排序方式
             sort: params.sort, //排序的字段
-            username: $("#usernameSearchInput").val(),
-            email: $("#emailInput").val()
+            username: $("#currentSearchUsername").val(),
+            email: $("#currentSearchEmail").val()
         };
     },
 
