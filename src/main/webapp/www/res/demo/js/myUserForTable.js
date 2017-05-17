@@ -5,12 +5,17 @@
 $("#toolbar input").keydown(function(){
     // 当按下回车键时
     if(event.keyCode == 13){
-
         // 记录当前查询信息
         setSearchInfo();
         // 重新加载
         reload();
     }
+});
+$("#searchButton").click(function(){
+        // 记录当前查询信息
+        setSearchInfo();
+        // 重新加载
+        reload();
 });
 /**
  * 显示载入中的图片
@@ -130,6 +135,8 @@ $("#updateButton").click(function() {
             $("#username").val(data.username);
             $("#password").val(data.password);
             $("#age").val(data.age);
+                $("input[type=radio][value="+data.sex+"]").prop("checked",'checked');
+
             $("#email").val(data.email);
             $("#birthday").val(data.birthday);
             $("#remark").val(data.remark);
@@ -226,16 +233,16 @@ function initValidator(){
             validating : 'glyphicon glyphicon-refresh'
         },
         submitButtons : '#sure',
-        /*fields : {
+        fields : {
             // 多个重复
             username : {
                 trigger : "blur",   // 设置失去焦点时才验证
                 message: 'The username is not valid',
                 validators: {
-                    notEmpty: {/!*非空提示*!/
+                    notEmpty: {/*非空提示*/
                         message: '用户名不能为空'
                     },
-                    stringLength: {/!*长度提示*!/
+                    stringLength: {/*长度提示*/
                         min: 3,
                         max: 20,
                         message: '用户名长度必须在3到20之间'
@@ -315,7 +322,7 @@ function initValidator(){
                     }
                 }
             }
-        }*/
+        }
     });
 
 }
