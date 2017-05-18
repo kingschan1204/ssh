@@ -27,13 +27,13 @@ public class MyRedisTest extends AbstractTransactionalJUnit4SpringContextTests {
     @Resource(name = "redisTemplate")
     private ListOperations<String, String> listOps;
 
-    @Resource(name = "redisTemplate")
+    @Resource(name = "redisTemplate2")
     private ValueOperations<String, String> valueOps;
 
     @Resource(name = "redisTemplate")
     private HashOperations<String, String, Object> hashOps;
 
-    @Resource(name = "redisTemplate")
+    @Resource(name = "redisTemplate2")
     private SetOperations<String, String> setOps;
 
     @Resource(name = "redisTemplate")
@@ -88,7 +88,7 @@ public class MyRedisTest extends AbstractTransactionalJUnit4SpringContextTests {
         System.out.println(setOps.intersect("setTest1", "setTest2"));//[2]
 
         //并集
-        System.out.println(setOps.union("setTest1", "setTest2"));//[d, 2, c, 1, a, 3, b]
+        System.out.println(setOps.union("setTest1", "setTest2"));//[3, a, 2, 1, b]
 
         //差集
         System.out.println(setOps.difference("setTest1", "setTest2"));//[3]

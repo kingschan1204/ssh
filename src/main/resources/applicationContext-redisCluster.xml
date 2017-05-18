@@ -45,10 +45,12 @@ http://www.springframework.org/schema/context  http://www.springframework.org/sc
             </set>
         </property>
     </bean>
+    <!-- jedis池配置 -->
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
         <property name="maxIdle" value="100"/>
         <property name="maxTotal" value="600"/>
     </bean>
+    <!-- 通过jedis池及集群配置实例一个工厂 -->
     <bean id="jeidsConnectionFactory"
           class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
         <constructor-arg ref="redisClusterConfiguration"/>
