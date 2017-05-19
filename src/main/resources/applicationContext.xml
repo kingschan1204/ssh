@@ -32,5 +32,7 @@
 	<!--<import resource="applicationContext-cache.xml" />-->
 	<import resource="applicationContext-db.xml" />
 	<!--<import resource="applicationContext-quartz.xml"/>-->
-	<import resource="applicationContext-redisCluster.xml" />
-</beans>  
+	<!--<import resource="applicationContext-redisCluster.xml" />-->
+	<import resource="applicationContext-redisSingle.xml" />
+	<import resource="applicationContext-redisSingle2.xml" />
+</beans>

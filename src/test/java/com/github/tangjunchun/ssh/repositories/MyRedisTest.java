@@ -1,5 +1,6 @@
 package com.github.tangjunchun.ssh.repositories;
 
+import com.github.kingschan1204.ssh.model.vo.UserVo;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.*;
@@ -8,6 +9,7 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,7 +42,7 @@ public class MyRedisTest extends AbstractTransactionalJUnit4SpringContextTests {
     private ZSetOperations<String, String> ZSetOps;
 
     @Test
-    public void testListOps(){
+    public void testListOps() {
         //List 其实是一个双向链表，从下面的代码就能看出来可以从两边进行push/pop操作
         redisTemplate.delete("listTest"); //删除这个List
         //添加操作
@@ -69,10 +71,10 @@ public class MyRedisTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     //set的操作
     @Test
-    public void testSetOps(){
+    public void testSetOps() {
         //添加
-        setOps.add("setTest1", "1","2","3","4");
-        setOps.add("setTest2", "a","b","1","2");
+        setOps.add("setTest1", "1", "2", "3", "4");
+        setOps.add("setTest2", "a", "b", "1", "2");
 
         //查询 set集合是无序的
         System.out.println(setOps.members("setTest1"));//[2, 1, 3, 4]
@@ -81,14 +83,14 @@ public class MyRedisTest extends AbstractTransactionalJUnit4SpringContextTests {
         System.out.println(setOps.isMember("setTest1", "4"));// true
 
         //删除  可以删除多个值
-        setOps.remove("setTest1", "1","4");
+        setOps.remove("setTest1", "1", "4");
         System.out.println(setOps.members("setTest1"));//[3, 2]
 
         //交集
         System.out.println(setOps.intersect("setTest1", "setTest2"));//[2]
 
         //并集
-        System.out.println(setOps.union("setTest1", "setTest2"));//[d, 2, c, 1, a, 3, b]
+        System.out.println(setOps.union("setTest1", "setTest2"));//[3, a, 2, 1, b]
 
         //差集
         System.out.println(setOps.difference("setTest1", "setTest2"));//[3]
@@ -96,7 +98,7 @@ public class MyRedisTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     // ZSetOps操作
     @Test
-    public void testZSetOps(){
+    public void testZSetOps() {
         //添加
         ZSetOps.add("ZSetTest", "google.com", 10);
         ZSetOps.add("ZSetTest", "baidu.com", 8);
@@ -131,10 +133,10 @@ public class MyRedisTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     // hash表操作 和Map差不多
     @Test
-    public void testHashOps(){
+    public void testHashOps() {
         // 添加
-        hashOps.put("hashTest", "key1","aa");
-        Map<String,String> map = new HashMap<String, String>();
+        hashOps.put("hashTest", "key1", "aa");
+        Map<String, String> map = new HashMap<String, String>();
         map.put("key2", "bb");
         map.put("key3", "cc");
         map.put("key4", "dd");
@@ -153,8 +155,51 @@ public class MyRedisTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     // String操作
     @Test
-    public void testValueOps(){
+    public void testValueOps() {
         valueOps.set("valueTest", "1");
         System.out.println(valueOps.get("valueTest"));
+    }
+
+    @Resource(name = "redisTemplate")
+    private ListOperations<String, UserVo> userListOps;
+
+    @Test
+    public void userList() {
+        redisTemplate.delete("userList"); //删除这个List
+        // 放入user,从1开始,每次往右边追加
+        for (int i = 1; i < 8; i++) {
+            userListOps.rightPush("userList", new UserVo(i, "tjc" + i, "password", "男", 18, "7715@qq.com", "1993-10-11", "remark"));
+            // 醒目点
+            System.out.println();
+        }
+
+        System.out.println("初始队列为");
+        // 查看当前队列
+        System.out.println(userListOps.range("userList", 0, -1)); // 应为 1 2 3 4 5 6 7
+
+        // 取出左边第一个user,取出操作在获取左边第一个user的同时会将其从队列删除
+        System.out.println("取出user:" + userListOps.leftPop("userList"));    //取出user:1
+
+        List<UserVo> userList = userListOps.range("userList", 0, -1);
+
+        // 查看当前队列
+        System.out.println("当前队列:" + userList); // 应为 2 3 4 5 6 7
+
+
+        int size = userList.size();
+
+        // 重复操作,最后只剩下7
+        while(size > 1) {
+            // 取出左边第一个user,取出操作在获取左边第一个user的同时会将其从队列删除
+            System.out.println("取出user:" + userListOps.leftPop("userList"));
+
+            // 获取当前队列
+            userList = userListOps.range("userList", 0, -1);
+
+            // 查看当前队列
+            System.out.println("当前队列:" + userList);
+
+            size = userList.size();
+        }
     }
 }
